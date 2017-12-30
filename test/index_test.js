@@ -25,6 +25,22 @@ tests.setUp = function(done) {
   done();
 };
 
+tests['should ignore requests matching excludes option'] = function(test) {
+  req.url = '/socket.io/?EIO=xxxxx';
+  middleware = historyApiFallback({
+      excludes: [
+          /\/socket.io.+/
+      ]
+  });
+
+  middleware(req, null, next);
+
+  test.equal(req.url, '/socket.io/?EIO=xxxxx');
+  test.ok(next.called);
+  test.done();
+
+};
+
 
 ['POST', 'PUT', 'DELETE', 'HEAD', 'OPTIONS'].forEach(function(method) {
   tests['should ignore ' + method + ' requests'] = function(test) {
